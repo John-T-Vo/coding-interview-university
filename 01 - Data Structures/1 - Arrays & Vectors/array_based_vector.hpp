@@ -1,8 +1,9 @@
 struct IntVector {
     int capacity;
+    int *array;
 
     public:
-        IntVector(int capacity);
+        IntVector();
         ~IntVector();
 
         int size();
