@@ -1,5 +1,5 @@
 struct IntVector {
-    int capacity;
+    int cap;
     int *array;
 
     public:
@@ -22,3 +22,23 @@ struct IntVector {
     private:
         void resize(int new_capacity);
 };
+
+inline int IntVector::size() {
+    return *array;
+}
+inline int IntVector::capacity() {
+    return cap;
+}
+inline bool IntVector::isEmpty() {
+    return size() == 0 ? true : false;
+}
+
+inline void IntVector::prepend(int item) {
+    insert(0, item);
+}
+inline void IntVector::push(int item) {
+    insert(size(), item);
+}
+inline int IntVector::pop() {
+    del(size()-1);
+}
