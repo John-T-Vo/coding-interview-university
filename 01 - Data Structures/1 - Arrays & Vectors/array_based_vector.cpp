@@ -1,44 +1,69 @@
 #include "array_based_vector.hpp"
 
 IntVector::IntVector() {
-    // Default capacity is 4
-    cap = 4;
-    // Default size is 5 (4 + size value)
-    int new_array[5];
+    cap = 16;
+    int new_array[17];
     array = &new_array[0];
-    // Set size = 0
     *array = 0;
 }
 
 // WIP: May need to manually delete array, idk
 IntVector::~IntVector() { }
 
-// WIP: Actual insertion and shuffling right-items right
 void IntVector::insert(int index, int item) {
-    // Index must be in range (0 to size)
-    if (!(0 <= index <= size())) {
+    if (not(0 <= index <= size())) {
         throw (index);
     }
-    // Resize if full
     if (size() >= capacity()) {
         int new_cap = capacity() * 2;
         resize(new_cap);
     }
-    // Pointer starts at chosen index
+    int array_size = size();
+    
     int *ptr = array;
-    ptr += index + 1;
-    // WIP
+    (*ptr)++;
+    ptr += array_size;
+    int temp;
+    
+    // Shuffle items right until index^th item shuffled
+    for (int i=size-1; i < index; i--) {
+        // Init: ptr = &current_cell
+        temp = *ptr;
+        ptr++;
+        *ptr = temp;
+        ptr--;
+        ptr--;
+        // Term: ptr = &prev_cell
+    }
+    ptr++;
+    *ptr = item;
 }
-// WIP: Actual deletion and shuffling right-items left
+
 int IntVector::del(int index) {
     // Index must be in range (0 to size-1)
     if (!(0 <= index <= size()-1)) {
         throw (index);
     }
-    // Pointer starts at chosen index
+    int array_size = size();
     int *ptr = array;
+    (*ptr)--;
     ptr += index + 1;
-    // WIP
+    int output = *ptr;
+
+    ptr++;
+    int temp;
+    // Shuffle items right until index^th item shuffled
+    for (int i=index+1; i >= array_size; i++) {
+        // Init: ptr = &current_cell
+        temp = *ptr;
+        ptr--;
+        *ptr = temp;
+        ptr++;
+        ptr++;
+        // Term: ptr = &next_cell
+    }
+
+    return output;
 }
 
 int IntVector::remove(int item) {
