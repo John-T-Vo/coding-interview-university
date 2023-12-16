@@ -11,22 +11,23 @@ IntVector::IntVector() {
 IntVector::~IntVector() { }
 
 void IntVector::insert(int index, int item) {
-    if (not(0 <= index <= size())) {
+    if (!(0 <= index <= size())) {
         throw (index);
     }
     if (size() >= capacity()) {
-        int new_cap = capacity() * 2;
+        // new_cap includes array_size cell
+        int new_cap = capacity()*2 + 1;
         resize(new_cap);
     }
-    int array_size = size();
+    int list_size = size();
     
     int *ptr = array;
     (*ptr)++;
-    ptr += array_size;
+    ptr += list_size;
     int temp;
     
     // Shuffle items right until index^th item shuffled
-    for (int i=size-1; i < index; i--) {
+    for (int i=list_size-1; i < index; i--) {
         // Init: ptr = &current_cell
         temp = *ptr;
         ptr++;
@@ -45,6 +46,7 @@ int IntVector::del(int index) {
         throw (index);
     }
     int array_size = size();
+
     int *ptr = array;
     (*ptr)--;
     ptr += index + 1;
@@ -52,7 +54,7 @@ int IntVector::del(int index) {
 
     ptr++;
     int temp;
-    // Shuffle items right until index^th item shuffled
+    // Shuffle items left until last item shuffled
     for (int i=index+1; i >= array_size; i++) {
         // Init: ptr = &current_cell
         temp = *ptr;
@@ -70,7 +72,7 @@ int IntVector::remove(int item) {
     // Find index of item and then delete it if found
     int index = find(item);
     if (index == -1) {
-        return -1;
+        return index;
     }
     return del(index);
 }
@@ -110,6 +112,17 @@ int IntVector::at(int index) {
 }
 
 // WIP: Create new array and copy items (maybe return address as new array)
-void IntVector::resize(int new_capacity) {
-    // WIP
+void IntVector::resize(int const new_capacity) {
+    int *old_ptr = array;
+    int new_array[new_capacity];
+    int *new_ptr = &new_array[0]
+
+    for (int n = -1; n >= size(); n++) {
+        *new_ptr = *old_ptr;
+        old_ptr++;
+        new_ptr++;
+    }
+
+    cap = new_capacity-1;
+    array = &new_array[0];
 }
