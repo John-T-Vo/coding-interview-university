@@ -1,75 +1,83 @@
 #include "array_based_vector.hpp"
+#include <iostream>
 
 IntVector::IntVector() {
     cap = 16;
-    int new_array[17];
-    array = &new_array[0];
-    *array = 0;
+    int new_array[16];
+    items = new_array;
+    list_size = 0;
 }
 
 // WIP: May need to manually delete array, idk
 IntVector::~IntVector() { }
 
 void IntVector::insert(int index, int item) {
-    if (!(0 <= index <= size())) {
-        throw (index);
-    }
-    if (size() >= capacity()) {
-        // new_cap includes array_size cell
-        int new_cap = capacity()*2 + 1;
-        resize(new_cap);
-    }
-    int list_size = size();
+    try {
+        if (!((0 <= index)&&(index <= size()))) {
+            throw (index);
+        }
+        if (size() >= capacity()) {
+            int new_cap = capacity()*2;
+            resize(new_cap);
+        }
     
-    int *ptr = array;
-    (*ptr)++;
-    ptr += list_size;
-    int temp;
-    
-    // Shuffle items right until index^th item shuffled
-    for (int i=list_size-1; i < index; i--) {
-        // Init: ptr = &current_cell
-        temp = *ptr;
+        int *ptr = items;
+        ptr += size()-1;
+        int temp;
+        
+        // Shuffle items right until index^th item shuffled
+        for (int i=size()-1; i >= index; i--) {
+            // Init: ptr = &current_cell
+            temp = *ptr;
+            ptr++;
+            *ptr = temp;
+            ptr--;
+            ptr--;
+            // Term: ptr = &prev_cell
+        }
         ptr++;
-        *ptr = temp;
-        ptr--;
-        ptr--;
-        // Term: ptr = &prev_cell
+        *ptr = item;
+        list_size++;
     }
-    ptr++;
-    *ptr = item;
+    catch (int index) {
+        std::cout << "Cannot insert, index " << index << " is out of range.\n";
+    }
 }
 
 int IntVector::del(int index) {
-    // Index must be in range (0 to size-1)
-    if (!(0 <= index <= size()-1)) {
-        throw (index);
-    }
-    int array_size = size();
+    try {
+        // Index must be in range (0 to size-1)
+        if (!((0 <= index)&&(index <= size()-1))) {
+            throw (index);
+        }
 
-    int *ptr = array;
-    (*ptr)--;
-    ptr += index + 1;
-    int output = *ptr;
+        int *ptr = items;
+        ptr += index+1;
+        int output = *ptr;
 
-    ptr++;
-    int temp;
-    // Shuffle items left until last item shuffled
-    for (int i=index+1; i >= array_size; i++) {
-        // Init: ptr = &current_cell
-        temp = *ptr;
-        ptr--;
-        *ptr = temp;
         ptr++;
-        ptr++;
-        // Term: ptr = &next_cell
-    }
+        int temp;
+        // Shuffle items left until last item shuffled
+        for (int i=index+1; i < list_size; i++) {
+            // Init: ptr = &current_cell
+            temp = *ptr;
+            ptr--;
+            *ptr = temp;
+            ptr++;
+            ptr++;
+            // Term: ptr = &next_cell
+        }
 
-    return output;
+        list_size--;
+        return output;
+    }
+    catch (int index) {
+        std::cout << "Cannot delete, index " << index << " is out of range.\n";
+        return 0;
+    }
 }
 
 int IntVector::remove(int item) {
-    // Find index of item and then delete it if found
     int index = find(item);
     if (index == -1) {
         return index;
@@ -79,11 +87,8 @@ int IntVector::remove(int item) {
 
 int IntVector::find(int item) {
     // Pointer starts at 0th index
-    int *ptr = array;
-    ptr++;
-    // Remember current index and size
+    int *ptr = items;
     int index = 0;
-    int list_size = size();
 
     // Linear search of list
     while (index < list_size) {
@@ -101,28 +106,34 @@ int IntVector::find(int item) {
 }
 
 int IntVector::at(int index) {
-    // Index must be in range (0 to size-1)
-    if (!(0 <= index <= size()-1)) {
-        throw (index);
+    try {
+        // Index must be in range (0 to size-1)
+        if (!((0 <= index)&&(index <= size()-1))) {
+            throw (index);
+        }
+        // Pointer goes to chosen index
+        int *ptr = items;
+        ptr += index;
+        return *ptr;
     }
-    // Pointer goes to chosen index
-    int *ptr = array;
-    ptr += index + 1;
-    return *ptr;
+    catch (int index) {
+        std::cout << "Cannot return item, index " << index << " is out of range.\n";
+        return -1;
+    }
 }
 
 // WIP: Create new array and copy items (maybe return address as new array)
 void IntVector::resize(int const new_capacity) {
-    int *old_ptr = array;
+    int *old_ptr = items;
     int new_array[new_capacity];
-    int *new_ptr = &new_array[0]
+    int *new_ptr = new_array;
 
-    for (int n = -1; n >= size(); n++) {
+    for (int n = -1; n < list_size; n++) {
         *new_ptr = *old_ptr;
         old_ptr++;
         new_ptr++;
     }
 
-    cap = new_capacity-1;
-    array = &new_array[0];
+    cap = new_capacity;
+    items = new_array;
 }

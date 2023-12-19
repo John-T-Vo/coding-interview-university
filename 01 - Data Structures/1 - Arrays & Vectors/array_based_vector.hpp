@@ -1,6 +1,7 @@
 struct IntVector {
     int cap;
-    int *array;
+    int list_size;
+    int *items;
 
     public:
         IntVector();
@@ -24,7 +25,7 @@ struct IntVector {
 };
 
 inline int IntVector::size() {
-    return *array;
+    return list_size;
 }
 inline int IntVector::capacity() {
     return cap;
@@ -40,5 +41,5 @@ inline void IntVector::push(int item) {
     insert(size(), item);
 }
 inline int IntVector::pop() {
-    del(size()-1);
+    return del(size()-1);
 }
