@@ -3,13 +3,12 @@
 
 IntVector::IntVector() {
     cap = 16;
-    int new_array[16];
+    int new_array[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     items = new_array;
     list_size = 0;
 }
 
-// WIP: May need to manually delete array, idk
-IntVector::~IntVector() { }
+IntVector::~IntVector() { delete items; }
 
 void IntVector::insert(int index, int item) {
     try {
@@ -52,7 +51,7 @@ int IntVector::del(int index) {
         }
 
         int *ptr = items;
-        ptr += index+1;
+        ptr += index;
         int output = *ptr;
 
         ptr++;
@@ -122,13 +121,12 @@ int IntVector::at(int index) {
     }
 }
 
-// WIP: Create new array and copy items (maybe return address as new array)
 void IntVector::resize(int const new_capacity) {
     int *old_ptr = items;
     int new_array[new_capacity];
     int *new_ptr = new_array;
 
-    for (int n = -1; n < list_size; n++) {
+    for (int n = 0; n < list_size; n++) {
         *new_ptr = *old_ptr;
         old_ptr++;
         new_ptr++;

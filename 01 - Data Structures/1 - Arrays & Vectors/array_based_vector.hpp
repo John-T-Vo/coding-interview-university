@@ -1,11 +1,12 @@
 struct IntVector {
-    int cap;
-    int list_size;
-    int *items;
 
     public:
         IntVector();
         ~IntVector();
+        
+        int cap;
+        int list_size;
+        int *items;
 
         int size();
         int capacity();
